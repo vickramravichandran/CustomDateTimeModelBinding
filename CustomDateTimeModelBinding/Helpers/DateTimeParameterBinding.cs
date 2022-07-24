@@ -13,7 +13,7 @@ namespace CustomDateTimeModelBinding.Helpers
     {
         public string ModelName { get; set; }
         public string DateFormat { get; set; }
-        public bool ReadFromQueryString { get; set; }
+        public bool FromUri { get; set; }
 
         public DateTimeParameterBinding(HttpParameterDescriptor descriptor)
             : base(descriptor) { }
@@ -26,7 +26,7 @@ namespace CustomDateTimeModelBinding.Helpers
             string dateToParse = null;
             var paramName = !string.IsNullOrEmpty(ModelName) ? ModelName : this.Descriptor.ParameterName;
 
-            if (ReadFromQueryString)
+            if (FromUri)
             {
                 // reading from query string
                 var nameVal = actionContext.Request.GetQueryNameValuePairs();

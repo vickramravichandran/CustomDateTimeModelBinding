@@ -8,7 +8,7 @@ namespace CustomDateTimeModelBinding.Helpers
     {
         public string Name { get; set; }
         public string DateFormat { get; set; }
-        public bool ReadFromQueryString { get; set; }
+        public bool FromUri { get; set; }
 
         public override HttpParameterBinding GetBinding(HttpParameterDescriptor parameter)
         {
@@ -18,7 +18,7 @@ namespace CustomDateTimeModelBinding.Helpers
                 {
                     ModelName = Name,
                     DateFormat = DateFormat,
-                    ReadFromQueryString = ReadFromQueryString
+                    FromUri = FromUri
                 };
             }
 
