@@ -11,10 +11,9 @@ namespace CustomDateTimeModelBinding.Helpers
 {
     public class DateTimeParameterBinding : HttpParameterBinding
     {
+        public string ModelName { get; set; }
         public string DateFormat { get; set; }
-
         public bool ReadFromQueryString { get; set; }
-
 
         public DateTimeParameterBinding(HttpParameterDescriptor descriptor)
             : base(descriptor) { }
@@ -25,21 +24,20 @@ namespace CustomDateTimeModelBinding.Helpers
             CancellationToken cancellationToken)
         {
             string dateToParse = null;
-            string paramName = this.Descriptor.ParameterName;
+            var paramName = !string.IsNullOrEmpty(ModelName) ? ModelName : this.Descriptor.ParameterName;
 
             if (ReadFromQueryString)
             {
                 // reading from query string
                 var nameVal = actionContext.Request.GetQueryNameValuePairs();
-                dateToParse = nameVal.Where(q => q.Key.Equals(paramName, StringComparison.OrdinalIgnoreCase))
-                                     .FirstOrDefault().Value;
+                var queryData = nameVal.Where(q => q.Key.Equals(paramName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                dateToParse = queryData.Value;
             }
             else
             {
                 // reading from route
                 var routeData = actionContext.Request.GetRouteData();
-                object dateObj = null;
-                if (routeData.Values.TryGetValue(paramName, out dateObj))
+                if (routeData.Values.TryGetValue(paramName, out var dateObj))
                 {
                     dateToParse = Convert.ToString(dateObj);
                 }
@@ -69,20 +67,20 @@ namespace CustomDateTimeModelBinding.Helpers
             IFormatProvider provider = null,
             DateTimeStyles styles = DateTimeStyles.AssumeLocal)
         {
-            string[] CUSTOM_DATE_FORMATS = new string[]
-                {
-                    "yyyyMMddTHHmmssZ",
-                    "yyyyMMddTHHmmZ",
-                    "yyyyMMddTHHmmss",
-                    "yyyyMMddTHHmm",
-                    "yyyyMMddHHmmss",
-                    "yyyyMMddHHmm",
-                    "yyyyMMdd",
-                    "yyyy-MM-dd-HH-mm-ss",
-                    "yyyy-MM-dd-HH-mm",
-                    "yyyy-MM-dd",
-                    "MM-dd-yyyy"
-                };
+            var CUSTOM_DATE_FORMATS = new string[]
+            {
+                "yyyyMMddTHHmmssZ",
+                "yyyyMMddTHHmmZ",
+                "yyyyMMddTHHmmss",
+                "yyyyMMddTHHmm",
+                "yyyyMMddHHmmss",
+                "yyyyMMddHHmm",
+                "yyyyMMdd",
+                "yyyy-MM-dd-HH-mm-ss",
+                "yyyy-MM-dd-HH-mm",
+                "yyyy-MM-dd",
+                "MM-dd-yyyy"
+            };
 
             if (formats == null)
             {
